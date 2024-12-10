@@ -89,7 +89,7 @@ $("body").on "click",".pixel_box_tools_area_btn_generate",(evt)->
                     canvas = $("#pixel_box_tools_area_canvas_area_1")[0]
                     context = canvas.getContext('2d')
                     ctx = context
-                    dis = pixel_box_fps*10*pixel_box_diameter
+                    dis = pixel_box_fps*pixel_box_diameter*10
                     ctx.fillStyle="white"
                     ctx.beginPath()
                     ctx.fillRect(pixel_box_points_padding_left_right*10+dis*i,pixel_box_points_padding_top_bottom*10+dis*j,pixel_box_diameter*10,pixel_box_diameter*10)
