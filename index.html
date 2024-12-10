@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>点阵花盒生成软件</title>
+    <script type="static/js/jquery-1.12.4.min.js"></script>
+    <style type="text/css">
+        .pixel_box_tools_area{
+            display:flex;
+            margin:20px;
+            padding:10px;
+            gap:10px;
+        }
+        .pixel_box_tools_area>div{
+            flex:1;
+        }
+        .pixel_box_tools_area input{
+            width:50px;
+        }
+
+        #pixel_box_tools_area_canvas_area_0{
+            background-color:black;
+        }
+        #pixel_box_tools_area_canvas_area_1{
+            background-color:red;
+        }
+        .pixel_box_tools_area_btns{
+            margin:20px 0px;
+        }
+        .pixel_box_tools_area_btns{
+            display:flex;
+            gap:20px;
+        }
+        .pixel_box_tools_area_btn_generates{
+            display:flex;
+            gap:5px;
+        }
+    </style>
+</head>
+<body>
+单位: mm
+<div class="pixel_box_tools_area">
+    <div>
+        <div>孔直径</div>
+        <div>
+            <input class="pixel_box_diameter" value="1">
+        </div>
+    </div>
+    <div>
+        <div>帧数</div>
+        <div>
+            <input class="pixel_box_fps" value="3">
+        </div>
+    </div>
+    <div>
+        <div>行数</div>
+        <div><input class="pixel_box_rows" value="27"></div>
+    </div>
+    <div>
+        <div>列数</div>
+        <div><input class="pixel_box_columns" value="57"></div>
+    </div>
+    <div>
+        <div>范围长</div>
+        <div>
+            <div class="pixel_box_points_width">--</div>
+        </div>
+    </div>
+    <div>
+        <div>范围高</div>
+        <div>
+            <div class="pixel_box_points_height">--</div>
+        </div>
+    </div>
+    <div>
+        <div>左右边距</div>
+        <div>
+            <input class="pixel_box_points_padding_left_right" value="2">
+        </div>
+    </div>
+    <div>
+        <div>上下边距</div>
+        <div>
+            <input class="pixel_box_points_padding_top_bottom" value="2">
+        </div>
+    </div>
+    <div>
+        <div>纸张总长</div>
+        <div>
+            <div class="pixel_box_points_width_all">--</div>
+        </div>
+    </div>
+    <div>
+        <div>纸张总高</div>
+        <div>
+            <div class="pixel_box_points_height_all">--</div>
+        </div>
+    </div>
+    <div>
+        <div>目标长</div>
+        <div><input class="pixel_box_points_width_all_aim" value="173"></div>
+    </div>
+    <div>
+        <div>目标高</div>
+        <div><input class="pixel_box_points_height_all_aim" value="83"></div>
+    </div>
+</div>
+<div class="pixel_box_tools_area_btns">
+    <button class="pixel_box_tools_area_btn_calc">计算</button>
+    <input class="pixel_box_tools_area_btn_image" type="file">
+    <button class="pixel_box_tools_area_btn_clean">清空画布</button>
+    <div class="pixel_box_tools_area_btn_generates"></div>
+</div>
+<div class="pixel_box_tools_area_canvas_areas">
+    <canvas id="pixel_box_tools_area_canvas_area_0"></canvas>
+    <canvas id="pixel_box_tools_area_canvas_area_1"></canvas>
+</div>
+<div class="log"></div>
+<script type="text/coffeescript">
+root = exports ? this
+# !!!! Hotpoor root object
+root.Hs or= {}
+Hs = root.Hs
+
+$("body").on "click",".pixel_box_tools_area_btn_clean",(evt)->
+    $(".pixel_box_tools_area_canvas_areas").html $(".pixel_box_tools_area_canvas_areas").html()
+$("body").on "click",".pixel_box_tools_area_btn_calc",(evt)->
+    pixel_box_diameter = $(".pixel_box_diameter").val()
+    pixel_box_fps = $(".pixel_box_fps").val()
+    pixel_box_rows = $(".pixel_box_rows").val()
+    pixel_box_columns = $(".pixel_box_columns").val()
+    pixel_box_points_padding_left_right = $(".pixel_box_points_padding_left_right").val()
+    pixel_box_points_padding_top_bottom = $(".pixel_box_points_padding_top_bottom").val()
+
+    pixel_box_diameter = parseFloat(pixel_box_diameter)
+    pixel_box_fps = parseFloat(pixel_box_fps)
+    pixel_box_rows = parseFloat(pixel_box_rows)
+    pixel_box_columns = parseFloat(pixel_box_columns)
+    pixel_box_points_padding_left_right = parseFloat(pixel_box_points_padding_left_right)
+    pixel_box_points_padding_top_bottom = parseFloat(pixel_box_points_padding_top_bottom)
+
+
+    范围长 = pixel_box_columns*pixel_box_fps*pixel_box_diameter - pixel_box_diameter*pixel_box_fps + pixel_box_diameter
+    范围高 = pixel_box_rows*pixel_box_fps*pixel_box_diameter - pixel_box_diameter*pixel_box_fps + pixel_box_diameter
+    纸总长 = 范围长 + pixel_box_points_padding_left_right*2
+    纸总高 = 范围高 + pixel_box_points_padding_top_bottom*2
+
+    $(".pixel_box_points_width").text 范围长
+    $(".pixel_box_points_height").text 范围高
+    $(".pixel_box_points_width_all").text 纸总长
+    $(".pixel_box_points_height_all").text 纸总高
+    
+    $("#pixel_box_tools_area_canvas_area_0").attr
+        "width":纸总长*10
+        "height":纸总高*10
+    $("#pixel_box_tools_area_canvas_area_1").attr
+        "width":纸总长*10
+        "height":纸总高*10
+    $("#pixel_box_tools_area_canvas_area_0").css
+        "width":纸总长
+        "height":纸总高
+    $("#pixel_box_tools_area_canvas_area_1").css
+        "width":纸总长
+        "height":纸总高
+    $(".pixel_box_tools_area_btn_generates").empty()
+    for i in [0..pixel_box_fps-1]
+        $(".pixel_box_tools_area_btn_generates").append """
+        <button class="pixel_box_tools_area_btn_generate" data-fps="#{i}">生成 第#{i+1}帧</button>
+        """
+$("body").on "click",".pixel_box_tools_area_btn_generate",(evt)->
+    if $(".pixel_box_tools_area_btn_image")[0].files.length==0
+        alert "请选择图片"
+        return
+    current_fps_index = $(this).attr "data-fps"
+    current_fps_index = parseInt(current_fps_index)
+    console.log "正在生成第#{current_fps_index+1}帧"
+    pixel_type = "方块"
+    picture = $(".pixel_box_tools_area_btn_image")[0].files[0]
+    reader = new FileReader()
+    reader.readAsDataURL(picture)
+    reader.onload = ()->
+        image = new Image()
+        image.src =reader.result
+        console.log(image)
+        $(".log").append image
+        image.onload = ()->
+            pixel_box_diameter = $(".pixel_box_diameter").val()
+            pixel_box_fps = $(".pixel_box_fps").val()
+            pixel_box_rows = $(".pixel_box_rows").val()
+            pixel_box_columns = $(".pixel_box_columns").val()
+            pixel_box_points_padding_left_right = $(".pixel_box_points_padding_left_right").val()
+            pixel_box_points_padding_top_bottom = $(".pixel_box_points_padding_top_bottom").val()
+
+            pixel_box_diameter = parseFloat(pixel_box_diameter)
+            pixel_box_fps = parseFloat(pixel_box_fps)
+            pixel_box_rows = parseFloat(pixel_box_rows)
+            pixel_box_columns = parseFloat(pixel_box_columns)
+            pixel_box_points_padding_left_right = parseFloat(pixel_box_points_padding_left_right)
+            pixel_box_points_padding_top_bottom = parseFloat(pixel_box_points_padding_top_bottom)
+            范围长 = pixel_box_columns*pixel_box_fps*pixel_box_diameter - pixel_box_diameter*pixel_box_fps + pixel_box_diameter
+            范围高 = pixel_box_rows*pixel_box_fps*pixel_box_diameter - pixel_box_diameter*pixel_box_fps + pixel_box_diameter
+            纸总长 = 范围长 + pixel_box_points_padding_left_right*2
+            纸总高 = 范围高 + pixel_box_points_padding_top_bottom*2
+            console.log "纸总长:",纸总长,";纸总高:",纸总高
+            for i in [0..pixel_box_columns-1]
+                for j in [0..pixel_box_rows-1]
+                    #console.log "正在获取点",i,j
+                    canvas = $("#pixel_box_tools_area_canvas_area_1")[0]
+                    context = canvas.getContext('2d')
+                    ctx = context
+                    dis = pixel_box_fps*10
+                    ctx.fillStyle="white"
+                    ctx.beginPath()
+                    ctx.fillRect(pixel_box_points_padding_left_right*10+dis*i,pixel_box_points_padding_top_bottom*10+dis*j,pixel_box_diameter*10,pixel_box_diameter*10)
+                    ctx.closePath()
+                    ctx.fill()
+            canvas = $("#pixel_box_tools_area_canvas_area_1")[0]
+            context = canvas.getContext('2d')
+            context.globalCompositeOperation = "source-in"
+            context.drawImage(image, pixel_box_diameter*10*current_fps_index, 0, 纸总长*10, 纸总高*10)
+            console.log image, pixel_box_diameter*10*current_fps_index, 0, 纸总长*10, 纸总高*10
+            img = canvas.toDataURL("image/png", 1)
+            image_current = new Image()
+            sourceCanvas = $("#pixel_box_tools_area_canvas_area_1")[0]
+            image_current.src = sourceCanvas.toDataURL('image/png')
+            destinationCanvas = $("#pixel_box_tools_area_canvas_area_0")[0]
+            destinationCtx = destinationCanvas.getContext('2d')
+            destinationCtx.drawImage(image_current, 0, 0)
+            $(".log").append image_current
+</script>
+
+</body>
+</html>
+<script type="static/js/coffeescript.js"></script>
