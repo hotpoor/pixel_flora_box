@@ -97,14 +97,14 @@ $("body").on "click",".pixel_box_tools_area_btn_generate",(evt)->
                     ctx.fill()
             canvas = $("#pixel_box_tools_area_canvas_area_1")[0]
             context = canvas.getContext('2d')
-            # context.globalCompositeOperation = "source-in"
+            context.globalCompositeOperation = "source-in"
             context.drawImage(image, pixel_box_diameter*10*current_fps_index, 0, 纸总长*10, 纸总高*10)
             console.log image, pixel_box_diameter*10*current_fps_index, 0, 纸总长*10, 纸总高*10
-            # img = canvas.toDataURL("image/png", 1)
-            # image_current = new Image()
-            # sourceCanvas = $("#pixel_box_tools_area_canvas_area_1")[0]
-            # image_current.src = sourceCanvas.toDataURL('image/png')
-            # destinationCanvas = $("#pixel_box_tools_area_canvas_area_0")[0]
-            # destinationCtx = destinationCanvas.getContext('2d')
-            # destinationCtx.drawImage(image_current, 0, 0)
-            # $(".log").append image_current
+            img = canvas.toDataURL("image/png", 1)
+            image_current = new Image()
+            sourceCanvas = $("#pixel_box_tools_area_canvas_area_1")[0]
+            image_current.src = sourceCanvas.toDataURL('image/png')
+            destinationCanvas = $("#pixel_box_tools_area_canvas_area_0")[0]
+            destinationCtx = destinationCanvas.getContext('2d')
+            destinationCtx.drawImage(image_current, 0, 0)
+            $(".log").append image_current
